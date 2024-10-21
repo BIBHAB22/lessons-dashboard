@@ -1,25 +1,41 @@
 // src/components/LessonList.js
 import React from 'react';
 import LessonCard from './Lessoncard';
+import ListView from './ListView'; // Import ListView component
 
 const lessons = [
   { date: '2024-10-21', className: 'Algebra I, Block A', topic: 'Solving multi-step equations', status: 'active', type: 'upcoming' },
-  { date: '2024-10-20', className: 'Algebra I, Block A', topic: 'Recognizing relationships between information to correlation', status: 'draft', type: 'upcoming' },
-  { date: '2024-10-15', className: 'Algebra I, Block A', topic: 'Understanding graphs', status: 'completed', type: 'completed' },
+  { date: '2024-10-24', className: 'Algebra I, Block A', topic: 'Solving multi-step equations', status: 'active', type: 'upcoming' },
+  { date: '2024-10-14', className: 'Algebra I, Block A', topic: 'Recognizing relationships between information to correlation', status: 'draft', type: 'completed' },
+  { date: '2024-10-20', className: 'Algebra I, Block A', topic: 'Recognizing relationships between information to correlation', status: 'draft', type: 'completed' },
+  { date: '2024-11-17', className: 'Algebra I, Block A', topic: 'Recognizing relationships between information to correlation', status: 'draft', type: 'completed' },
+  { date: '2024-10-11', className: 'Algebra I, Block A', topic: 'Understanding graphs', status: 'completed', type: 'completed' },
   // Add more lesson objects here...
 ];
-
+const today = new Date();
 // Utility function to get categorized lessons
 const categorizeLessons = (lessons) => {
-  const today = new Date();
-  const startOfWeek = new Date();
-  startOfWeek.setDate(today.getDate() - today.getDay());
-  const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay()); // Start of this week (Sunday)
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 7); // End of this week (Saturday)
+
+  // Start and end of next week (Sunday to Saturday)
+  const startOfNextWeek = new Date(endOfWeek);
+  startOfNextWeek.setDate(endOfWeek.getDate() ); // Start of next week (Sunday)
+  const endOfNextWeek = new Date(startOfNextWeek);
+  endOfNextWeek.setDate(startOfNextWeek.getDate() + 7); // End of next week (Saturday)
+
+  // End of the next 30 days
+  const endOf30Days = new Date(today);
+  endOf30Days.setDate(today.getDate() + 30);
+
 
   const categorizedLessons = {
     today: [],
     thisWeek: [],
-    thisMonth: [],
+    nextWeek: [], // Add nextWeek category
+    next30Days: [],
   };
 
   lessons.forEach((lesson) => {
@@ -29,10 +45,12 @@ const categorizeLessons = (lessons) => {
     if (lesson.type === 'upcoming') {
       if (lessonDate.toDateString() === today.toDateString()) {
         categorizedLessons.today.push(lesson);
-      } else if (lessonDate >= startOfWeek && lessonDate < startOfWeek.setDate(startOfWeek.getDate() + 7)) {
+      } else if (lessonDate >= startOfWeek && lessonDate < endOfWeek) {
         categorizedLessons.thisWeek.push(lesson);
-      } else if (lessonDate >= startOfMonth) {
-        categorizedLessons.thisMonth.push(lesson);
+      } else if (lessonDate >= startOfNextWeek && lessonDate < endOfNextWeek) {
+        categorizedLessons.nextWeek.push(lesson); // Categorize for next week
+      } else if (lessonDate >= today && lessonDate < endOf30Days) {
+        categorizedLessons.next30Days.push(lesson);
       }
     }
   });
@@ -40,44 +58,71 @@ const categorizeLessons = (lessons) => {
   return categorizedLessons;
 };
 
-const LessonList = ({ filter }) => {
+const LessonList = ({ filter, showAsList }) => {
   const categorizedLessons = categorizeLessons(lessons);
 
   return (
-    <div className="ml-4 grid gap-4">
-      {/* Render lessons for Today, This Week, and This Month only for Upcoming */}
+    <div className="space-y-4 ml-4">
+      {/* Render lessons for Today, This Week, Next Week, and Next 30 Days only for Upcoming */}
       {filter === 'upcoming' && (
         <>
           {categorizedLessons.today.length > 0 && (
             <div>
-              <h2 className="text-lg text-[#70748B] font-bold">Today</h2>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {categorizedLessons.today.map((lesson, index) => (
-                  <LessonCard key={index} {...lesson} />
-                ))}
-              </div>
+              <h2 className="text-lg text-[#70748B] font-bold">TODAY</h2>
+              {showAsList ? (
+                <ListView lessons={categorizedLessons.today} />
+              ) : (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {categorizedLessons.today.map((lesson, index) => (
+                    <LessonCard key={index} {...lesson} />
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
           {categorizedLessons.thisWeek.length > 0 && (
             <div>
-              <h2 className="text-lg text-[#70748B] font-bold">This Week</h2>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {categorizedLessons.thisWeek.map((lesson, index) => (
-                  <LessonCard key={index} {...lesson} />
-                ))}
-              </div>
+              <h2 className="text-lg text-[#70748B] font-bold">THIS WEEK</h2>
+              {showAsList ? (
+                <ListView lessons={categorizedLessons.thisWeek} />
+              ) : (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {categorizedLessons.thisWeek.map((lesson, index) => (
+                    <LessonCard key={index} {...lesson} />
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
-          {categorizedLessons.thisMonth.length > 0 && (
+          {categorizedLessons.nextWeek.length > 0 && ( // Render Next Week lessons
             <div>
-              <h2 className="text-lg text-[#70748B] font-bold">This Month</h2>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {categorizedLessons.thisMonth.map((lesson, index) => (
-                  <LessonCard key={index} {...lesson} />
-                ))}
-              </div>
+              <h2 className="text-lg text-[#70748B] font-bold">NEXT WEEK</h2>
+              {showAsList ? (
+                <ListView lessons={categorizedLessons.nextWeek} />
+              ) : (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {categorizedLessons.nextWeek.map((lesson, index) => (
+                    <LessonCard key={index} {...lesson} />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {categorizedLessons.next30Days.length > 0 && (
+            <div>
+              <h2 className="text-lg text-[#70748B] font-bold ">NEXT 30 DAYS</h2>
+              {showAsList ? (
+                <ListView lessons={categorizedLessons.next30Days} />
+              ) : (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {categorizedLessons.next30Days.map((lesson, index) => (
+                    <LessonCard key={index} {...lesson} />
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </>
@@ -87,13 +132,17 @@ const LessonList = ({ filter }) => {
       {filter === 'completed' && (
         <div>
           <h2 className="text-lg font-bold">Completed Lessons</h2>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {lessons
-              .filter(lesson => lesson.type === 'completed')
-              .map((lesson, index) => (
-                <LessonCard key={index} {...lesson} />
-            ))}
-          </div>
+          {showAsList ? (
+            <ListView lessons={lessons.filter(lesson => lesson.type === 'completed')} />
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {lessons
+                .filter(lesson => lesson.type === 'completed')
+                .map((lesson, index) => (
+                  <LessonCard key={index} {...lesson} />
+              ))}
+            </div>
+          )}
         </div>
       )}
 

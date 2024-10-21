@@ -4,9 +4,11 @@ import { FaBook, FaChalkboardTeacher, FaUsers, FaRegStickyNote, FaSearch, FaCog,
 
 const Sidebar = () => {
   return (
-    <div className="bg-[#F8F6F3] p-4 h-full min-h-screen">
+    <div className="bg-[#F8F6F3] p-4 flex flex-col">
       <div className="text-2xl font-bold mb-6">Soefia</div>
-      <nav className="space-y-6">
+      
+      {/* Navigation section with scrollable content */}
+      <nav className="flex-grow overflow-y-auto space-y-6">
         <a href="#lessons" className="flex flex-col items-center space-y-1 text-gray-700 hover:text-[#7b7eda]">
           <FaChalkboardTeacher className="text-2xl" />
           <span className="text-md">Lessons</span>
@@ -23,8 +25,23 @@ const Sidebar = () => {
           <FaRegStickyNote className="text-2xl" />
           <span className="text-md">Notebook</span>
         </a>
-        
       </nav>
+
+      {/* Bottom items will stay at the bottom */}
+      <div className="mt-4 space-y-6">
+        <a href="#search" className="flex flex-col items-center space-y-1 text-gray-700 hover:text-[#7b7eda]">
+          <FaSearch className="text-2xl" />
+          <span className="text-md">Search</span>
+        </a>
+        <a href="#settings" className="flex flex-col items-center space-y-1 text-gray-700 hover:text-[#7b7eda]">
+          <FaCog className="text-2xl" />
+          <span className="text-md">Settings</span>
+        </a>
+        <a href="#profile" className="flex flex-col items-center space-y-1 text-gray-700 hover:text-[#7b7eda]">
+          <FaUser className="text-2xl" />
+          <span className="text-md">Profile</span>
+        </a>
+      </div>
     </div>
   );
 };
