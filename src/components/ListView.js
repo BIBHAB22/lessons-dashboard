@@ -42,10 +42,10 @@ const ListView = ({ lessons }) => {
             </div>
             <div className="w-120">
               <p className="text-sm font-semibold text-gray-700">Topic</p>
-              {lesson.topic}
+              <span className="font-bold">{lesson.topic}</span>
             </div>
             <div className="flex-1 flex justify-end gap-2">
-            <button className="bg-[#DFDAD3] text-[#5457C9] rounded px-4 py-1 hover:bg-gray-400">
+            <button className="bg-white text-[#5457C9] rounded px-4 py-1 border">
               <FaEllipsisH className="ml-2" />
             </button>
             <button className="bg-[#E3E4FF] text-[#5457C9] rounded px-4 py-1 flex">

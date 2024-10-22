@@ -17,7 +17,7 @@ const LessonCard = ({ date, className, topic, status }) => {
   });
 
   return (
-    <div className="bg-white p-4 mb-4 rounded-lg border border-b-8 flex flex-col basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+    <div className="bg-white p-4 mb-4 mr-4 rounded-lg border border-b-8 flex flex-col basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
       <div className="flex gap-2 items-center">
         <div className="w-16 h-16 bg-[#F9F3EB] flex justify-center items-center rounded-md border-t-4 border-red-500">
           <div>
@@ -48,7 +48,7 @@ const LessonCard = ({ date, className, topic, status }) => {
           <FaPlay className="mr-2" /> {/* Icon for Launch lesson */}
           Launch lesson
         </button>
-        <button className="bg-[#DFDAD3] text-[#5457C9] px-4 py-2 rounded flex items-center font-bold">
+        <button className="bg-white text-[#5457C9] px-4 py-2 rounded-md flex items-center font-bold border">
           More
           <FaEllipsisH className="ml-2" /> {/* Icon for More */}
         </button>
